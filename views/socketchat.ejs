@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+
+        *{
+            padding:0;
+            margin:0;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px){  /* 모바일에서의 display 처리 */
+            .slidebtn{
+                display:block;
+                width:2rem;
+                height:2rem;
+                -webkit-filter: invert(100%);
+                filter: invert(100%);
+                margin:0.3rem;
+                display:inline;
+                position:fixed;
+            }
+        }
+        @media (min-width: 768px){
+            .slidebtn{
+                display:none;
+            }
+        }
+
+        #leftslidein{
+            top:3rem;
+            right:0;
+            display:none;
+        }
+        #leftslideout{
+            top:3rem;
+            left:0;
+        }
+        #rightslidein{
+            top:3rem;
+            left:0;
+            display:none;
+        }
+        #rightslideout{
+            top:3rem;
+            right:0;
+        }
+
+    /* header */
+
+        .headerspace{
+            width:100%;
+            height:3rem;
+        }
+        header{
+            width:100%;
+            background-color:rgba(2, 2, 2, 0.671);
+            height:3rem;
+            position:fixed;
+        }
+        header>img{
+            width:2rem;
+            height:2rem;
+            -webkit-filter: invert(100%);
+            filter: invert(100%);
+            margin:0.3rem;
+            display:inline;
+        }
+        header>p{
+            display:inline;
+            color:white;
+            font-size:1.75rem;
+            padding:0.2rem;
+        }
+
+    /* body, bodycontainer */
+
+        body{
+            background-image:url("/static/dune.jpg");
+            background-size:100%;
+            width:100%;
+            height:100vh;
+        }
+        .bodycontainer{
+            width:100%;
+            margin:0;
+            padding:0;
+        }
+        .bodycontainer>div{
+            padding:0.2rem;;
+        }
+
+    /* 화면 좌측 유저리스트, 탈퇴 유저 리스트 */   
+        .userinfo, .userlist, .deaduserlist, .chatbox{   /* 검은 반투명한 사각형 cell  */
+            display:flex;
+            flex-direction:column;
+            margin:0 0 0.2rem 0;
+            padding:1rem;
+            border-radius:0.3rem;
+            background-color:rgba(0, 0, 0, 0.829);
+            color:white;
+        }
+        .userinfo{
+            width:100%;
+            height:15vh;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-evenly;
+        }
+        hr{
+            border-top: 1px solid white;
+        }
+
+        #myinfo .upic{
+            width:3rem;
+            height:3rem;
+            border-radius:30%;
+            display:inline;
+        }
+        #myinfo .uid{
+            display:block;
+            color:gray;
+            font-size:0.7rem;
+        }
+        #myinfo .nameidbox{
+            width:70%;
+        }
+        #myinfo{
+            display:flexbox;
+            justify-content:space-evenly;
+        }
+        #mybtnbox button, #mybtnbox label{
+            margin:0;
+            font-size:0.7rem;
+        }
+        input[type="file"] { 
+            position: absolute; 
+            width: 1px; 
+            height: 1px; 
+            padding: 0; 
+            margin: -1px; 
+            overflow: hidden; 
+            clip:rect(0,0,0,0); 
+            border: 0; 
+        }
+
+        .userlist, .deaduserlist{
+            width:100%;
+            height:39vh;
+            overflow-y:scroll;
+        }
+
+    /* 유저리스트/탈퇴 유저리스트에서 각각의 유저에 대응하는 element가 .ulist_box */
+        .ulist_box .uname{
+            color:white;
+        }
+        .ulist_box{
+            display:flex;
+            justify-content:space-between;
+            margin-bottom:0.2rem;
+        }
+        .ulist_box .uname{
+            width:60%;
+        }
+        .ulist_box button{
+            display:none;
+        }
+        .ulist_box .userbt{
+            width:1rem;
+            height:1rem;
+            -webkit-filter: invert(100%);
+            filter: invert(100%);
+            margin:0.2rem;
+        }
+        .ulist_box .userbt:hover{
+            cursor:pointer;
+            filter: invert(100%) drop-shadow(0 0 0.1rem rgb(184, 4, 4));
+        }
+        .uip, .uid{
+            display:none;
+        }
+
+    /* 화면 중앙 대화창과 메시지 입력창*/
+        .chatbox{
+            width: 100%;
+            height:80vh;
+            overflow-y:scroll;
+            color:white;
+            position:relative;
+        }
+        .sendbox{
+            background-color:rgba(255, 235, 205, 0.486);
+            height:13vh;
+            margin:0.2rem;
+            padding:0.5rem;
+            border-radius:0.3rem;
+        }
+        #msg{
+            width:100%;
+            height:100%;
+        }
+
+    /* 각 메시지에 대응하는 element가 .msgbox */
+        .msgbox{
+            padding-bottom:0.5rem;
+        }
+        .msgtextbox{
+            display:flex;
+            align-items:end;
+            width:fit-content;
+        }
+
+        .time{
+            width:fit-content;
+            font-size:0.8rem;
+            color:gray;
+        }
+        .upic{
+            display:inline-block;
+            width:1.5rem;
+            height:1.5rem;
+            border-radius:30%;
+        }
+
+        .msgtext{
+            width:fit-content;
+            height:fit-content;
+            padding:0.5rem;
+            border-radius:0 1rem 1rem 1rem;
+            background-color:white;
+            color:black;            
+        }
+        .mymsgtext{
+            width:fit-content;
+            height:fit-content;
+            padding:0.5rem;
+            border-radius:1rem 0 1rem 1rem;
+            background-color:brown;
+            color:white;
+        }
+        .tempnotice, .tempmsg, .tempmymsg, .tempuser, .tempdmitem{
+            display:none;
+        }
+        .notice{
+            text-align:center;
+            color:rgb(53, 140, 145);
+            font-size:0.7rem;
+            font-weight:bold;
+        }
+        .sendbox{
+            position:relative;
+        }
+
+        #dmlist{
+            position:absolute;
+            top:0;
+            left:0;
+            transform:translate(0, -100%);
+            width:10rem;
+            height:fit-content;
+            max-height:8rem;
+            overflow-y:scroll;
+            background-color:white;
+            color:black;
+            display:flex;
+            flex-direction:column;
+        }
+        .dmitem{
+            display:flex;
+            justify-content:between;
+        }
+
+        .dmitem .uid{
+            display:none;
+        }
+        .dmitem:hover{
+            background-color:lightblue;
+            cursor: pointer;
+        }
+
+        #tothisdm{
+            background-color:lightblue;
+            display:flex;
+            width:fit-content;
+            padding:0.4rem;
+            border-radius:5%;
+            color:black;
+            position:absolute;
+            right:0;
+            top:0;
+            transform:translate(0, -100%);
+        }
+
+        #dm_xbt{
+            width:1rem;
+            height:1rem;
+            margin:0.2rem;
+            -webkit-filter: invert(100%);
+            filter: invert(100%);
+        }
+
+        #tothisdm .uid{
+            display:none;
+        }
+
+    /* 화면 우측 대화 관련 통계 정보를 표시하는 dashbox */
+        .rightcol{
+            display:flex;
+            flex-direction:column;
+            height:95vh;
+            overflow-y:scroll;
+        }
+        .alertcell{
+            display:none;
+            margin:0 0 0.2rem 0;
+            padding:1rem;
+            border-radius:0.3rem;
+            background-color:rgba(0, 0, 0, 0.829); /* rgba(255, 0, 0, 0.651); */
+            color:white;
+            height:fit-content;    /* 17vh */
+        }
+        .timerbox{
+            font-size:5rem;
+            font-weight:bolder;
+            text-align:center;
+            filter: drop-shadow(0 0 1rem red);
+        }
+
+        .linechartcell{
+            margin:0 0 0.2rem 0;
+            padding:1rem;
+            border-radius:0.3rem;
+            background-color:rgba(0, 0, 0, 0.829);
+            color:white;
+            height:17vh;
+        }
+        
+        .alertcell .candidate{
+            font-weight:bold;
+            color:red;            
+        }
+
+        .alertcell .btbox{
+            display:flex;
+            justify-content:space-evenly;
+            padding:0.5rem;
+        }
+
+        .btbox button{
+            margin:0.5rem;
+            width:50%;
+        }
+        .alertcell p{
+            font-size:0.8rem;
+        }
+        #myvote{
+            display:none;
+        }
+
+        .dashcell{
+            margin:0 0 0.2rem 0;
+            padding:1rem;
+            border-radius:0.3rem;
+            background-color:rgba(0, 0, 0, 0.829);
+            color:white;
+            height:fit-content;
+        }
+
+        .dashheader{
+            display:flex;
+            justify-content:space-between;
+        }
+
+        .dashtitle{
+            font-size:1.3rem;
+            font-weight:bold;
+        }
+
+        .foldbt, .unfoldbt{
+            width:1rem;
+            height:1rem;
+            -webkit-filter: invert(100%);
+            filter: invert(100%);
+            margin:0.2rem;
+        }
+
+        .foldbt:hover, .unfoldbt:hover{
+            cursor:pointer; 
+        }
+        .dashdata{
+            height:25vh;
+            overflow-y:scroll;  /* 파이 완성되면 이 줄은 지운다. */
+        }
+
+    </style>
+    <title>SSAC Chat</title>
+</head>
+<body>
+    <header>
+        <img src="/static/user.png">
+        <p>CHAT</p>
+    </header>
+    <div class="headerspace"></div>
+    <div class="bodycontainer row">
+        <div class="col-md-2 d-none d-md-block leftcol">
+            <img class="slidebtn" id="leftslidein" src="/static/sidemenu2.png">
+            <div class="userinfo">
+                <div class="row" id="myinfo">
+                    <div class="upic"></div>
+                    <div class="nameidbox">
+                        <div class="uname"></div>
+                        <div class="uid"></div>
+                    </div>
+                </div>
+                <hr>
+                <form id="mybtnbox" class="row" method="POST", enctype="multipart/form-data">
+                    <div class = "col-4">
+                        <button type="button" class="btn btn-warning" id="newcolorbt">Color</button>
+                    </div>
+                    <div class = "col-4">
+                        <label for="newpic" class="btn btn-warning" id="newpicbt">Picture</label>
+                        <input type="file" name="newpic" id="newpic">
+                    </div>
+                    <div class = "col-4">
+                        <button type="button" class="btn btn-warning" id="uppicbt">Upload</button>
+                    </div>
+                </form>
+            </div>
+            <div>
+                <div class="userlist"></div>
+                <div class="deaduserlist"></div>
+            </div>
+            
+        </div>
+        <div class="col-md-6 col-12 midcol">
+            <img class="slidebtn" id="leftslideout" src="/static/sidemenu.png">
+            <img class="slidebtn" id="rightslideout" src="/static/sidemenu2.png">
+            <div class="tempuser">
+                <div class="ulist_box">
+                    <div class="upic"></div>
+                    <div class="uname"></div>
+                    <div class="uip"></div>
+                    <div class="uid"></div>
+                    <div class="ulist_bt">
+                        <img class="userbt" id="hidebt" src="/static/hidden.png">
+                        <img class="userbt" id="showbt" src="/static/eye.png">
+                        <img class="userbt" id="kickbt" src="/static/block.png">
+                    </div>
+                </div>
+            </div>
+            <div class="tempnotice">
+                <div class="notice"></div>
+            </div>
+            <div class="tempmsg">
+                <div class="msgbox">
+                    <div>
+                        <div class="upic"> </div>
+                        <span class="uname"></span>
+                    </div>
+                    <div class="msgtextbox">
+                        <div class="msgtext"></div>
+                        <div class="time"></div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="tempmymsg">
+                <div class="msgbox">
+                    <div class="msgtextbox">
+                        <div class="time"></div>
+                        <div class="mymsgtext"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tempdmitem">
+                <div class="dmitem">
+                    <div class="upic"></div>
+                    <div class="uid"></div>
+                    <div class="uname"></div>
+                </div>
+            </div>
+            <div class="chatbox">
+                
+            </div>
+            <div class="sendbox row">
+                <div id="dmlist"></div>
+                <div id="tothisdm">
+                    <div class="uid"></div>
+                    <div class="uname"></div>
+                    <img id="dm_xbt" src="/static/x.png">
+                </div>
+                <textarea id="msg" autofocus placeholder="@키를 눌러서 DM상대를 선택하세요"></textarea>
+            </div>
+        </div>
+        <div class="col-md-4 d-none d-md-block rightcol">
+            <img class="slidebtn" id="rightslidein" src="/static/sidemenu.png">
+            <div class="alertcell"> 
+                <div>
+                    <span id="candidate"></span>
+                    <span>강퇴 찬/반 투표</span>
+                </div>
+                <div class="timerbox">
+                    <span>00 :</span>
+                    <span id="timernum"></span>
+                </div>
+                <p> 익명의 유저가 강퇴 투표를 제안하였습니다! 접속 중인 인원의 과반수를 넘는 찬성 표를 얻으면 투표 대상은 강퇴되며 ip가 차단됩니다.</p>
+                <p> 타이머 종료 시 자동으로 결과가 서버가 전송됩니다. 미 선택시 [반대]로 전송됩니다.</p>
+                <div class="btbox">
+                    <button type="button" id="yesbt" class="btn btn-secondary">찬성</button>
+                    <button type="button" id="nobt" class="btn btn-success">반대</button>
+                </div>
+                <div id="myvote">0</div>
+            </div>
+            <div class="dashcell">
+                <div class="dashheader">
+                    <div class="dashtitle">이 방의 수다쟁이</div>
+                    <div class="cellfoldbt">
+                        <img src="/static/up.png" class="foldbt">
+                        <img src="/static/down.png" class="unfoldbt">
+                    </div>
+                </div>
+                <div class="msgpie dashdata"></div>
+            </div>
+            <div class="dashcell">
+                <div class="dashheader">
+                    <div class="dashtitle">웃음이 많은 분위기메이커</div>
+                    <div class="cellfoldbt">
+                        <img src="/static/up.png" class="foldbt">
+                        <img src="/static/down.png" class="unfoldbt">
+                    </div>
+                </div>
+                <div class="laughpie dashdata"></div>
+            </div>
+            <div class="dashcell">
+                <div class="dashheader">
+                    <div class="dashtitle">마음이 여린 눈물요정</div>
+                    <div class="cellfoldbt">
+                        <img src="/static/up.png" class="foldbt">
+                        <img src="/static/down.png" class="unfoldbt">
+                    </div>
+                </div>
+                <div class="crypie dashdata"></div>
+            </div>
+        </div>
+    </div>
+    
+    
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+<script>
+    const username="<%=username%>";
+    console.log(`username:${username} 로 입장함`);
+
+    let socketid;
+    let userip;
+    const socket = io.connect();
+    
+    /*  User 인스턴스 새로 만들기 위해 서버로 닉네임을 전송함 */
+
+    socket.on("primary",(data)=>{
+        socketid=data.id;
+        socket.emit("matchid", {username:username});
+    });
+
+    /* 공지/알림, alert */
+
+    socket.on("notice", (data)=>{
+        console.log(`notice:${data}`);
+        let tempnotice=$(".tempnotice").html();
+        $(".chatbox").append(tempnotice);
+        $(".chatbox").find(".notice:last-child").html(data);
+    });
+
+    socket.on("alert",(data)=>{
+        alert(data);
+    });
+
+    /* 유저 리스트, 탈퇴 유저 리스트 업데이트  */
+
+    socket.on("newulist",(data)=>{
+        
+        console.log(data.ulist);
+        console.log(data.dead_ulist);
+
+        let tempuser=$(".tempuser").html();
+        let ulist_c=[];
+        $(".userlist .uid").each(function(){  // 왜 여기서 화살표 함수로 하면 망가지지
+            ulist_c.push($(this).text());
+        });
+        let dulist_c=[];
+        $(".deaduserlist .uid").each(function(){
+            dulist_c.push($(this).text());
+        });
+
+        console.log(`ulist_c : ${ulist_c}`);
+
+        data.ulist.map(u=>{
+            if(u.id==socketid){
+                userip = u.ip;
+                console.log("match");
+                $(".userinfo .upic").css("background-image", `url(${u.img})`);
+                $(".userinfo .upic").css("background-size", `100% 100%`);
+                $(".userinfo").css("border-right",`solid 1rem ${u.color}`);
+                $(".userinfo .uname").text(u.name);
+                $(".userinfo .uid").text(u.id);
+            }
+            else if(ulist_c.includes(u.id)==false){
+                $(".userlist").append(tempuser);
+                $(".userlist").find(".ulist_box:last-child .upic").css("background-image", `url(${u.img})`);
+                $(".userlist").find(".ulist_box:last-child .upic").css("background-size", `100% 100%`);
+                $(".userlist").find(".ulist_box:last-child").css("border-right",`solid 0.5rem ${u.color}`);
+                $(".userlist").find(".ulist_box:last-child .uname").text(u.name);
+                $(".userlist").find(".ulist_box:last-child .uid").text(u.id);
+                $(".userlist").find(".ulist_box:last-child .uip").text(u.ip);
+                $(".userlist").find(".ulist_box:last-child #showbt").hide();
+            }
+        });
+
+        if(data.dead_ulist && data.dead_ulist.length>0){
+            data.dead_ulist.map(u=>{    
+                if(dulist_c.includes(u.id)==false){
+                    $(".deaduserlist").append(tempuser);
+                    $(".deaduserlist").find(".ulist_box:last-child .upic").css("background-image", `url(${u.img})`);
+                    $(".deaduserlist").find(".ulist_box:last-child .upic").css("background-size", `100% 100%`);
+                    $(".deaduserlist").find(".ulist_box:last-child").css("border-right",`solid 0.5rem ${u.color}`);
+                    $(".deaduserlist").find(".ulist_box:last-child .uname").text(u.name);
+                    $(".deaduserlist").find(".ulist_box:last-child .uname").css("color","gray");
+                    $(".deaduserlist").find(".ulist_box:last-child .uid").text(u.id);
+                    $(".deaduserlist").find(".ulist_box:last-child .uip").text(u.ip);
+                    $(".deaduserlist").find(".ulist_box:last-child #hidebt").remove();
+                    $(".deaduserlist").find(".ulist_box:last-child #showbt").remove();
+                    $(".deaduserlist").find(".ulist_box:last-child #kickbt").remove();
+                }
+                if(ulist_c.includes(u.id)){
+                    $(".userlist .uid").each(function(){
+                        if($(this).text()==u.id){
+                            $(this).closest(".ulist_box").remove();
+                        }
+                    });
+                    let ind = ulist_c.findIndex(item=>item==u.id);
+                    ulist_c.splice(ind,1);
+                }
+            });
+            refreshgraph(data.ulist, data.dead_ulist);
+        }
+        else{
+            refreshgraph(data.ulist);
+        }
+
+        $("#dmlist").empty();
+        let dmitem = $(".tempdmitem").html();
+
+        data.ulist.map(u=>{
+            if(u.id!=socketid){
+                $("#dmlist").append(dmitem);
+                $("#dmlist").find(".dmitem:last-child .upic").css("background-image",`url(${u.img})`);
+                $("#dmlist").find(".dmitem:last-child .upic").css("background-size", `100% 100%`);
+                $("#dmlist").find(".dmitem:last-child .uname").text(u.name);
+                $("#dmlist").find(".dmitem:last-child .uid").text(u.id);
+                $("#dmlist").find(".dmitem:last-child").css("border-right",`solid 0.5rem ${u.color}`);
+            }
+        });
+    });
+
+    socket.on("blockthisip",(data)=>{
+        if(userip==data.ip){
+            window.location.href="/blocked";
+        }
+    });
+
+    /* 프로필 색상, 이미지 바꾸기 */
+
+    $("#newcolorbt").click(()=>{
+        socket.emit("newcolor_toserver");
+    });
+
+    socket.on("newcolor_toclient", (data)=>{
+        if(data.id==socket.id){
+            $(".userinfo").css("border-right",`solid 1rem ${data.color}`);
+        }
+        else{
+            $(".userlist .uid").each(function(){
+                if($(this).text()==data.id){
+                    $(this).closest(".ulist_box").css("border-right",`solid 0.5rem ${data.color}`);
+                }
+            });
+        }
+    });
+
+    socket.on("newimg_toclient",(data)=>{
+        $(".userlist .ulist_box").each(function(){
+            if($(this).find(".uid").text()==data.id){
+                $(this).find(".upic").css("background-image",`url(${data.src})`);
+            }
+        });
+    });
+
+    $("#uppicbt").click(()=>{
+        console.log($("#mybtnbox").find("input[type=file]")[0].files.length);
+
+        if($("#mybtnbox").find("input[type=file]")[0].files.length==1){
+            console.log($("#mybtnbox")[0]);
+            let formdata = new FormData($("#mybtnbox")[0]);
+            formdata.set("id",socketid);
+            console.log(formdata);
+
+            $.ajax({
+                method:"POST",
+                url:"/upload",
+                enctype:"multipart/form-data",
+                dataType:"json",
+                processData:false,
+                contentType:false,
+                data:formdata
+            })
+            .done((data)=>{
+                $(".userinfo .upic").css("background-image",`url(${data.src})`);
+                $(".userinfo .upic").css("background-size",`100% 100%`);
+            });
+        }
+    })
+
+    /* 메시지 수신 : .chatbox div의 맨 아래로 스크롤 */
+
+    let scrolldown=()=>{
+        $(".chatbox").animate({
+            scrollTop: $(".chatbox")[0].scrollHeight - $(".chatbox")[0].clientHeight
+        }, 500);
+    }
+
+    /* 메시지 수신  : 보낸 사람이 본인이 아니며 차단목록에 없는 경우 동적 요소 추가  */
+    
+    socket.on("msg_toclient",(data)=>{
+        console.log(data);
+        let tempmsg=$(".tempmsg").html();
+        if(data.id!==socketid && hideuserlist.includes(data.id)==false){
+            $(".chatbox").append(tempmsg);
+            $(".chatbox").find(".msgbox:last-child").find(".uname").text(data.name);
+            if(data.isDM==true && data.fromname){
+                $(".chatbox").find(".msgbox:last-child").find(".msgtext").html(`[DM from ${data.fromname}]<br>${data.msg}`);
+            }
+            else{
+                $(".chatbox").find(".msgbox:last-child").find(".msgtext").html(data.msg);
+            }
+            $(".chatbox").find(".msgbox:last-child").find(".time").text(data.time);
+            $(".chatbox").find(".msgbox:last-child").find(".msgtext").css("border-left", `solid 10px ${data.color}`);
+            $(".chatbox").find(".msgbox:last-child").find(".upic").css("background-image", `url(${data.img})`);
+            $(".chatbox").find(".msgbox:last-child").find(".upic").css("background-size", "100% 100%");
+            scrolldown();
+        }
+    });
+
+    /* keyup을 사용해서 마지막 입력 글자가 '@'일때 DM 상대를 선택할 수 있는 목록이 나타나는 기능 */
+
+    $("#dmlist").hide();
+    $("#tothisdm").hide();
+
+    $("#msg").keyup(()=>{
+        let text = $("#msg").val();
+        if(text.slice(-1)=="@"){
+            $("#dmlist").show();
+        }
+    });
+
+    $("#dmlist").on({
+        click:function(){
+            if($("#dmlist").is(":visible")){
+                let id = $(this).closest(".dmitem").find(".uid").text();
+                let name = $(this).closest(".dmitem").find(".uname").text();
+                $("#tothisdm").show();
+                $("#tothisdm .uid").text(id);
+                $("#tothisdm .uname").text(`DM to : @ ${name} `);
+                $("#dmlist").hide();
+                $("#msg").val("");
+                $("#msg").focus();
+            }
+        }
+    },".dmitem");
+
+    $("#dm_xbt").click(()=>{
+        if($("#tothisdm").is(":visible")){
+            $("#tothisdm .uid").text("");
+            $("#tothisdm .uname").text("");
+            $("#tothisdm").hide();
+        }
+    });
+
+    /* 메시지 전송 */
+
+    const msg = document.getElementById("msg");
+
+    let sendmsg=()=>{
+        let msgtxt = $("#msg").val();
+        msgtxt = msgtxt.split("\n").join("<br>");
+        if(msgtxt!==""){
+            let now = new Date();
+            let [hour, minute, second] = [now.getHours(), now.getMinutes(), now.getSeconds()];
+            if(hour<10){
+                hour = `0${hour}`;
+            }
+            if(minute<10){
+                minute = `0${minute}`;
+            }
+            if(second<10){
+                second = `0${second}`;
+            }
+            let time = `${hour}:${minute}:${second}`;
+            let content={id:socket.id, name:username, msg:msgtxt, isDM:false, time:time};
+            let todmname;
+
+            if($("#tothisdm .uid").text()!=""){
+                content.isDM = true;
+                content["toid"] = $("#tothisdm .uid").text();
+                todmname = $("#tothisdm .uname").text()
+            }
+            socket.emit("msg_toserver", content);
+
+            $("#tothisdm .uid").text("");
+            $("#tothisdm .uname").text("");
+            $("#tothisdm").hide();
+
+            let temp=$(".tempmymsg").html();
+            $(".chatbox").append(temp);
+            
+            if(content.isDM == true && content.toid){
+                /* console.log(`[DM to <${content.toid}>]<br>${content.msg}`); */
+                $(".chatbox").find(".msgbox:last-child").find(".mymsgtext").html(`[${todmname}]<br>${content.msg}`);
+            }
+            else{
+                $(".chatbox").find(".msgbox:last-child").find(".mymsgtext").html(content.msg);
+            }
+            $(".chatbox").find(".msgbox:last-child").find(".time").html(time);
+            $(".chatbox").find(".msgbox:last-child").css("display","flex");
+            $(".chatbox").find(".msgbox:last-child").css("flex-direction","row-reverse");
+
+            scrolldown();
+        }
+    }
+
+    msg.addEventListener("keypress", (e)=>{
+        if (e.key === "Enter" && !e.shiftKey){
+            e.preventDefault();
+            sendmsg();
+            $("#msg").val("");
+        }
+    });
+
+    /* 유저 단위마다 붙어 있는 버튼 기능 : 메시지 수신 거부/해제( only 클라이언트 쪽 ), 강퇴 투표 시작(서버로 요청) */
+
+    let hideuserlist=[];
+
+    $(".userlist").on({     // 수신거부
+        click:function(){
+            let userobj = $(this).closest(".ulist_box");
+            let [id, name] = [userobj.find(".uid").text(), userobj.find(".uname").text()];
+
+            hideuserlist.push(id);
+            console.log(hideuserlist);
+            alert(`${name}님 수신거부 완료`);
+
+            userobj.find(".uname").css("color", "gray");
+            $(this).hide();
+            userobj.find("#showbt").show();
+        }
+    },"#hidebt");
+
+    $(".userlist").on({click:function(){    // 수신거부 해제
+        let userobj = $(this).closest(".ulist_box");
+        let [id, name] = [userobj.find(".uid").text(), userobj.find(".uname").text()];
+
+        /* hideuserlist = hideuserlist.filter(u=>u.id!=id); */       // 이건 안됨...
+
+        let ind = hideuserlist.findIndex(u=>u.id==id);
+        hideuserlist.splice(ind,1);                                 // .. 이건 됨...
+
+        console.log(hideuserlist);
+        alert(`${name}님 수신거부 해제 완료`);
+
+        userobj.find(".uname").css("color", "white");
+        $(this).hide();
+        userobj.find("#hidebt").show();
+    }},"#showbt");
+
+    $(".userlist").on({click:function(){    // 강퇴 요청
+        let userobj = $(this).closest(".ulist_box");
+        let [id, name] = [userobj.find(".uid").html(), userobj.find(".uname").html()];
+        content={id:id};
+        if(confirm(`계속 진행하시면 ${name}을/를 강퇴시키는 투표가 시작되고, 과반수 이상의 찬성표를 얻게 되면 해당 유저는 강퇴됩니다. 진행하시겠습니까?`)){
+            socket.emit("requestvote", content);
+        }
+        if (window.matchMedia("(max-width: 768px)").matches) {
+            leftslidein();
+            rightslideout();
+        }
+    }},"#kickbt");
+
+    /* 찬/반 버튼 클릭 시 동작 */
+
+    $("#yesbt").click(()=>{
+        $("#yesbt").removeClass("btn-secondary");
+        $("#yesbt").addClass("btn-success");
+        $("#nobt").removeClass("btn-success");
+        $("#nobt").addClass("btn-secondary");
+        $("#myvote").text("1");
+    });
+
+    $("#nobt").click(()=>{
+        $("#nobt").removeClass("btn-secondary");
+        $("#nobt").addClass("btn-success");
+        $("#yesbt").removeClass("btn-success");
+        $("#yesbt").addClass("btn-secondary");
+        $("#myvote").text("0");
+    });
+
+    /* 서버에서 1000ms마다 타이머 남은시간 데이터 emit. 남은시간=0이 되면 .alertcell에서 선택한 찬/반 정보 서버로 전송. */
+
+    socket.on("getseconds", (data)=>{
+        if(data.sec<10){
+            $("#timernum").text(`0${data.sec}`);
+        }
+        else{
+            $("#timernum").text(data.sec);
+        }
+    });
+
+    socket.on("vote", (data)=>{
+        $(".alertcell").show();
+        $("#candidate").text(`${data.name}`);
+    });
+
+    socket.on("retrievevote",(data)=>{
+        content={
+            id:data.id,
+            vote:$("#myvote").text()
+        }
+        socket.emit("sendvote", content);
+        $(".alertcell").hide();
+        $("#nobt").removeClass("btn-secondary");
+        $("#nobt").addClass("btn-success");
+        $("#yesbt").removeClass("btn-success");
+        $("#yesbt").addClass("btn-secondary");
+        $("#myvote").text("0");
+    });
+    
+
+    /* dashboard cell fold/unfold */
+
+    $(".foldbt").hide();
+    $(".dashdata").hide();
+
+    $(".rightcol").on({
+        click:function(){
+            $(this).closest(".dashcell").find(".dashdata").show();
+            $(this).closest(".dashcell").find(".foldbt").show();
+            $(this).hide();
+        }
+    },".unfoldbt");
+
+    $(".rightcol").on({
+        click:function(){
+            $(this).closest(".dashcell").find(".dashdata").hide();
+            $(this).closest(".dashcell").find(".unfoldbt").show();
+            $(this).hide();
+        }
+    },".foldbt");
+
+    /* d3.js으로 데이터 시각화 */
+
+    const refreshgraph=(ulist, dead_ulist = [] )=>{
+        let totallist = ulist.concat(dead_ulist);
+        let {msgsum, laughsum, crysum } = totallist.reduce((acc,u)=>{
+            acc.msgsum += u.msgnum;
+            acc.laughsum += u.laughnum;
+            acc.crysum += u.crynum;
+            return acc;
+        },{msgsum:0, laughsum:0, crysum:0});
+
+        let svg_w = $(".dashcell").innerWidth()-30 ;
+        let svg_h = $(".msgpie").innerHeight() ;
+        console.log(`svg_w : ${svg_w} , svg_h : ${svg_h}`);
+
+        let [havemsg, havelaugh, havecry]  = [ totallist.filter(u=>u.msgnum>0), totallist.filter(u=>u.laughnum>0),totallist.filter(u=>u.crynum>0)];
+
+        if(msgsum>0){
+            $(".msgpie").empty();
+
+            let databox = d3.select(".msgpie").append("svg").attr("width",svg_w).attr("height",svg_h); 
+
+            let angleGen = d3.pie()
+            .value((d)=>d.msgnum)
+            .padAngle(0.05);
+
+            let arcGen = d3.arc()
+            .innerRadius(50)
+            .outerRadius(90);
+
+            let data = angleGen(havemsg);
+            console.log(data);
+
+            databox.selectAll("path")
+            .data(data)
+            .enter()
+            .append("path")
+            .attr("d", arcGen)
+            .attr("fill", (d)=>d.data.color)
+            .attr("transform", `translate(${svg_w/2},${svg_h/2})`);
+        }
+
+        if(laughsum>0){
+            $(".laughpie").empty();
+        
+            let databox = d3.select(".laughpie").append("svg").attr("width",svg_w).attr("height",svg_h); 
+
+            let angleGen = d3.pie()
+            .value((d)=>d.laughnum)
+            .padAngle(0.05);
+
+            let arcGen = d3.arc()
+            .innerRadius(50)
+            .outerRadius(90);
+
+            let data = angleGen(havelaugh);
+
+            databox.selectAll("path")
+            .data(data)
+            .enter()
+            .append("path")
+            .attr("d", arcGen)
+            .attr("fill", (d)=>d.data.color)
+            .attr("transform", `translate(${svg_w/2},${svg_h/2})`);
+        }
+
+        if(crysum>0){
+            $(".crypie").empty();
+        
+            let databox = d3.select(".crypie").append("svg").attr("width",svg_w).attr("height",svg_h); 
+
+            let angleGen = d3.pie()
+            .value((d)=>d.crynum)
+            .padAngle(0.05);
+
+            let arcGen = d3.arc()
+            .innerRadius(50)
+            .outerRadius(90);
+
+            let data = angleGen(havecry);
+
+            databox.selectAll("path")
+            .data(data)
+            .enter()
+            .append("path")
+            .attr("d", arcGen)
+            .attr("fill", (d)=>d.data.color)
+            .attr("transform", `translate(${svg_w/2},${svg_h/2})`);
+        }
+    }
+    
+    /* 반응형 : 사이드 메뉴 열고 닫기 */
+    let leftslideout=()=>{
+        $(".leftcol").removeClass("d-none");      //col-md-2 d-none d-md-block
+        $(".leftcol").addClass("col-12");
+        $(".midcol").removeClass("col-12");     //col-md-6 col-12 midcol
+        $(".midcol").addClass("d-none");
+        $("#leftslideout").hide();
+        $("#leftslidein").show();
+    }
+    $("#leftslideout").click(leftslideout);
+
+    
+    let leftslidein=()=>{
+        $(".leftcol").addClass("d-none");       //col-md-2 col-12 d-md-block
+        $(".leftcol").removeClass("col-12");
+        $(".midcol").addClass("col-12");     
+        $(".midcol").removeClass("d-none");     //col-md-6 d-none midcol
+        $("#leftslideout").show();
+        $("#leftslidein").hide();
+    }
+    $("#leftslidein").click(leftslidein);
+
+
+    let rightslideout=()=>{
+        $(".midcol").removeClass("col-12");            //col-md-6 col-12 midcol
+        $(".midcol").addClass("d-none");
+        $(".rightcol").removeClass("d-none");         //col-md-4 d-none d-md-block rightcol
+        $(".rightcol").addClass("col-12");
+        $("#rightslideout").hide();
+        $("#rightslidein").show();
+    }
+
+    $("#rightslideout").click(rightslideout);
+
+    let rightslidein=()=>{
+        $(".midcol").addClass("col-12");            //col-md-6 col-12 midcol
+        $(".midcol").removeClass("d-none");
+        $(".rightcol").addClass("d-none");         //col-md-4 d-none d-md-block rightcol
+        $(".rightcol").removeClass("col-12");
+        $("#rightslidein").hide();
+        $("#rightslideout").show();
+    }
+    $("#rightslidein").click(rightslidein);
+
+</script>
+</html>
