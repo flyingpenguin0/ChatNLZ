@@ -19,18 +19,17 @@ app.use("/uploads",express.static(__dirname+"/uploads"));
 const multer = require ("multer");
 const storage = multer.diskStorage({
     destination: (req,file,cb)=>{
-        cb(null,"uploads");
+        cb(null,"./uploads/");
     },
     filename:(req,file,cb)=>{
-        let checkimgfile = [".apng",".avif",".gif",".jpg",".jpeg",".jfif",".pjpeg",".pjp",".png",".svg",".webp"];
-        let checkdatafile = ["txt", "csv"];
-        if(checkimgfile.includes(path.extname(file.originalname))){
+        let checkimgfile = ["image/avif","image/gif","image/jpg","image/jpeg","image/png","image/svg","image/webp"];
+        let checkdatafile = ["text/rtf", "text/xml", "text/csv"];
+        if(checkimgfile.includes(file.mimetype)){
             console.log("forstorage");
             console.log(file);
             cb(null, file.originalname);
         }
-        //mimetype 검사
-        else if(checkdatafile.includes(path.extname(file.originalname))){
+        else if(checkdatafile.includes(file.mimetype)){
             console.log("data file incoming");
             console.log(file);
             cb(null, "tobechanged.txt");
@@ -260,16 +259,16 @@ app.post("/upload", upload_multer.single("newpic"), (req,res)=>{
         if(checkext.includes(path.extname(req.file.originalname))){
             console.log("it is an image file");
             let ind = indbyid(req.body.id);
-            ulist[ind].img = req.file.path;
+            ulist[ind].img = "/uploads/"+req.file.originalname;
 
             content={
                 id:req.body.id,
-                src:req.file.path
+                src:"/uploads/"+req.file.originalname
             }
             io.emit("newimg_toclient", content)
         }
     }
-    res.send({src:req.file.path});
+    res.send({src:"/uploads/"+req.file.originalname});
 });
 
 app.get('/blocked',(req,res)=>{
