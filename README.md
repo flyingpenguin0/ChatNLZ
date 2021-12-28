@@ -26,7 +26,7 @@ Installation steps :
   - Server-side mimetype validation of uploaded image files using **Multer**
   - Uploaded files served through Dynamic DOM element manipulation using jQuery AJAX requests
   .
- ![chatnlz_2](https://user-images.githubusercontent.com/91243754/147538744-04bcd84e-252d-4405-b562-f0eec2f3c793.gif)
+  ![chatnlz_2 (2)](https://user-images.githubusercontent.com/91243754/147539285-fe8c99c3-18e2-4f4d-abaf-3f8413291ea1.gif)
 
  
 ### 3. Messages classified into DM(Direct Messaging) and Group Messaging  : 
