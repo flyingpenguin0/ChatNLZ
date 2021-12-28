@@ -15,15 +15,15 @@ Installation steps :
   2. In the root of the project directory, run the command  `npm install`
 
 ## About this Web Service
-###0. Premise : 
+### 0. Premise : 
 
-###1.  : 
+### 1.  : 
 
-###2.  : 
+### 2.  : 
 
-###3.  : 
+### 3.  : 
 
-###4.  : 
+### 4.  : 
 
 
 # New functions to be added
