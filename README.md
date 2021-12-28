@@ -48,9 +48,11 @@ Installation steps :
   - Ejecting the member and banning the IP from reentering the group chat if the majority conditions are met
   
    ![chatnlz_5](https://user-images.githubusercontent.com/91243754/147544337-404a52c1-e637-4de3-8cde-d81bbe98d17a.gif)
+   
     ( Did not make the majority : failed to eject )
   
    ![chatnlz_6](https://user-images.githubusercontent.com/91243754/147544135-0af4338d-5404-46f1-bcb2-b4bd3882cd84.gif)
+   
     ( Made the majority : user ejected )
 
 ### 6. Analyzing Messages / Data visualization
@@ -58,10 +60,13 @@ Installation steps :
   - Data is visualized and update real-time via pie charts using **d3.js**
   .
   
-  ![chatnlz_7](https://user-images.githubusercontent.com/91243754/147544728-a8e8f345-5560-4465-810e-22852a7ea4f9.gif)
+  ![chatnlz_7 (2)](https://user-images.githubusercontent.com/91243754/147545411-bcc742c3-8afb-4c91-900b-a48c2163aacd.gif)
 
   
 ### 7. A Responsive web page suited for both PC/Mobile browsers
+
+![chatnlz_8](https://user-images.githubusercontent.com/91243754/147545630-4523ba84-6fdf-4ed1-809c-787f31ac206c.gif)
+
   
 # New functions to be added ...
   - [ ] Analyzing KakaoTalk chat log files that are uploaded to the server
