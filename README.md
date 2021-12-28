@@ -39,17 +39,27 @@ Installation steps :
   
   .
   
-  ![chatnlz_4](https://user-images.githubusercontent.com/91243754/147541478-036b852e-3057-4df8-b8a2-9be6760da84c.gif)
+   ![chatnlz_4](https://user-images.githubusercontent.com/91243754/147541478-036b852e-3057-4df8-b8a2-9be6760da84c.gif)
 
 ### 5. Ejecting an user from the group chat via Majority vote : 
   - A button requesting the vote for an ejection of a member
   - A 30 seconds countdown implemented server-side and each second emitted to the browser
   - A voting form with options of Agree/Disagree which sends the selected option at the end of the countdown 
   - Ejecting the member and banning the IP from reentering the group chat if the majority conditions are met
+  
+   ![chatnlz_5](https://user-images.githubusercontent.com/91243754/147544337-404a52c1-e637-4de3-8cde-d81bbe98d17a.gif)
+    ( Did not make the majority : failed to eject )
+  
+   ![chatnlz_6](https://user-images.githubusercontent.com/91243754/147544135-0af4338d-5404-46f1-bcb2-b4bd3882cd84.gif)
+    ( Made the majority : user ejected )
 
 ### 6. Analyzing Messages / Data visualization
   - Analysis of a user's chat frequency, frequency of positivity/negativity are analyzed
   - Data is visualized and update real-time via pie charts using **d3.js**
+  .
+  
+  ![chatnlz_7](https://user-images.githubusercontent.com/91243754/147544728-a8e8f345-5560-4465-810e-22852a7ea4f9.gif)
+
   
 ### 7. A Responsive web page suited for both PC/Mobile browsers
   
