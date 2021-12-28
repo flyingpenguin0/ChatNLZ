@@ -30,13 +30,14 @@ Installation steps :
 
  
 ### 3. Messages classified into DM(Direct Messaging) and Group Messaging  : 
-![chatnlz_3](https://user-images.githubusercontent.com/91243754/147540849-3384b9f7-d387-4701-a55f-b739537b7d42.gif)
+  ![chatnlz_3](https://user-images.githubusercontent.com/91243754/147540849-3384b9f7-d387-4701-a55f-b739537b7d42.gif)
 
 
 
 ### 4. Blocking an user : 
   - A toggle button to block/unblock a certain user's messages from being received
-  
+  ![chatnlz_4](https://user-images.githubusercontent.com/91243754/147541478-036b852e-3057-4df8-b8a2-9be6760da84c.gif)
+
 ### 5. Ejecting an user from the group chat via Majority vote : 
   - A button requesting the vote for an ejection of a member
   - A 30 seconds countdown implemented server-side and each second emitted to the browser
