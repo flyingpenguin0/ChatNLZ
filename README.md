@@ -41,5 +41,5 @@ Installation steps :
 ### 7. PC/모바일 브라우저 유저 모두의 쾌적한 user experience를 위한 반응형 페이지 구현
   
 # New functions to be added ...
-  - Analyzing KakaoTalk chat log files that are uploaded to the server
-  - Options of creating a private chat room after Join/Login 
+  - [ ] Analyzing KakaoTalk chat log files that are uploaded to the server
+  - [ ] Options of creating a private chat room after Join/Login 
