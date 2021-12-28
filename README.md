@@ -1,5 +1,6 @@
 ## ChatNLZ
 An instant messaging platform which analyzes your text logs real-time
+
 view in [Korean](/README_kr.md)
 
 ## Working demo link
