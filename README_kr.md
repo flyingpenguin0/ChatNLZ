@@ -16,11 +16,31 @@ http://13.209.7.47:8000/chat
   2. 프로젝트 폴더의 루트에서 다음을 실행합니다. `npm install`
 
 ## 웹 서비스 내용
-### 0. 요약 : 
+### 1. Websocket 통신 ( socket.io 사용 ) : 
+  - socket.io를 활용한 실시간 채팅 전송 및 새로운 socket connect/disconnect에 따른 공지 전송 기능 구현
 
-### 1.  : 
+### 2. 프로필 이미지 업로드 기능 및 업로드 시 즉시 브라우저에 반영 : 
+  - **Multer**를 활용한 파일 mimetype에 따른 이미지 파일의 server-side  유효성 검사
+  - jQuery를 활용한 AJAX request와 동적 DOM element manipulation으로 리프레쉬 없이 업로드 파일을 serve.
+ 
+### 3.  Direct Messaging(DM) / 전체 메시지 구분 기능
 
-### 2.
-
+### 4. 수신 차단 기능 구현 : 
+  - 특정 참가자의 메시지의 수신 차단/차단 해제 토글 버튼 구현
+  
+### 5.강제 퇴장 과반수 투표 기능 : 
+  - 특정 참가자의 메시지의 수신 차단/차단 해제 토글 버튼 구현
+  - 30초의 카운트 다운을 서버 사이드에서 진행하며 브라우저에도 카운트다운 동시에 표시
+  - 찬성/반대 선택 가능한 투표 form과 카운트다운의 시간이 만료되면 선택 값을 서버로 자동 전송하는 기능
+  - 투표 참여자의 과반수 조건 만족 시 해당 유저의 IP 차단하여 재입장 방지 기능
+  - 
+### 6. 메시지 내용 분석 기능
+  -  d3.js를 활용하여 채팅 메시지 수 비율,  긍정적인 표현의 비율,  부정적인 표현의 비율을 차트로 표시하고 실시간 업데이트
+  -  
+### 7. PC/모바일 브라우저 유저 모두의 쾌적한 user experience를 위한 반응형 페이지 구현
+  
+# New functions to be added ...
+  - Analyzing KakaoTalk chat log files that are uploaded to the server
+  - Options of creating a private chat room after Join/Login 
 
 ## 추가기능 업데이트 예정
