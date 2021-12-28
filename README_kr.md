@@ -12,7 +12,7 @@ http://13.209.7.47:8000/chat
   1. Node.js와 npm 이 설치되어 있어야 합니다.
  
 설치 과정 : 
-  1. Git repository 를 터미널에서 클론합니다. `git clone https://github.com/flyingpenguin0/HiveSweeper.git`
+  1. Git repository 를 터미널에서 클론합니다. `https://github.com/flyingpenguin0/ChatNLZ.git`
   2. 프로젝트 폴더의 루트에서 다음을 실행합니다. `npm install`
 
 ## 웹 서비스 내용
