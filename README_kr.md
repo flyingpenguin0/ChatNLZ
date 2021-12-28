@@ -52,12 +52,12 @@ http://13.209.7.47:8000/chat
 
   < 과반수 조건 불만족 : 강제퇴장 X >
   
-    ![chatnlz_5](https://user-images.githubusercontent.com/91243754/147545852-607ac34c-3708-4a32-9a6a-2a65f0742a93.gif)
+   ![chatnlz_5](https://user-images.githubusercontent.com/91243754/147545852-607ac34c-3708-4a32-9a6a-2a65f0742a93.gif)
 
   
   < 과반수 조건 만족 : 강제퇴장 O >
   
-    ![chatnlz_6](https://user-images.githubusercontent.com/91243754/147545859-79ad68ee-9e51-4c3c-9e96-a873b2514ec1.gif)
+   ![chatnlz_6](https://user-images.githubusercontent.com/91243754/147545859-79ad68ee-9e51-4c3c-9e96-a873b2514ec1.gif)
 
 
 ### 6. 메시지 내용 분석 기능
