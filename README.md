@@ -18,6 +18,8 @@ Installation steps :
 ## About this Web Service
 ### 1. Websocket communication ( via socket.io ) : 
   - Real-time chatting service based on **socket.io** with a real-time notice emitted on every socket connection/disconnection
+  ![chatnlz_1](https://user-images.githubusercontent.com/91243754/147536999-1f32f537-592e-4853-a2f3-b1768a48f956.gif)
+
 
 ### 2. Profile image instantly updated on browser on upload : 
   - Server-side mimetype validation of uploaded image files using **Multer**
