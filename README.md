@@ -38,7 +38,7 @@ Installation steps :
   - Analysis of a user's chat frequency, frequency of positivity/negativity are analyzed
   - Data is visualized and update real-time via pie charts using **d3.js**
   
-### 7. PC/모바일 브라우저 유저 모두의 쾌적한 user experience를 위한 반응형 페이지 구현
+### 7. A Responsive web page suited for both PC/Mobile browsers
   
 # New functions to be added ...
   - [ ] Analyzing KakaoTalk chat log files that are uploaded to the server
