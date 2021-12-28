@@ -39,8 +39,7 @@ http://13.209.7.47:8000/chat
   
 ### 7. PC/모바일 브라우저 유저 모두의 쾌적한 user experience를 위한 반응형 페이지 구현
   
-# New functions to be added ...
-  - Analyzing KakaoTalk chat log files that are uploaded to the server
-  - Options of creating a private chat room after Join/Login 
+## 추가기능 업데이트 예정 ...
+  - [] 카카오톡 채팅 로그 파일 업로드 시 분석 / 시각화 기능 
+  - [] 회원가입/로그인 후 비밀 채팅방 생성/참가 기능  
 
-## 추가기능 업데이트 예정
