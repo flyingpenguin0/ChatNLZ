@@ -30,6 +30,9 @@ Installation steps :
 
  
 ### 3. Messages classified into DM(Direct Messaging) and Group Messaging  : 
+![chatnlz_3](https://user-images.githubusercontent.com/91243754/147540849-3384b9f7-d387-4701-a55f-b739537b7d42.gif)
+
+
 
 ### 4. Blocking an user : 
   - A toggle button to block/unblock a certain user's messages from being received
