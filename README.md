@@ -36,6 +36,7 @@ Installation steps :
 
 ### 4. Blocking an user : 
   - A toggle button to block/unblock a certain user's messages from being received
+  .
   ![chatnlz_4](https://user-images.githubusercontent.com/91243754/147541478-036b852e-3057-4df8-b8a2-9be6760da84c.gif)
 
 ### 5. Ejecting an user from the group chat via Majority vote : 
