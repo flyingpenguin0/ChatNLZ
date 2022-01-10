@@ -4,7 +4,7 @@ An instant messaging platform which analyzes your text logs real-time
 view in [Korean](/README_kr.md)
 
 ## Working demo link
-http://13.209.7.47:8000/chat
+http://52.78.152.55:5000/chat
 
 ## Installation prerequisite
 
